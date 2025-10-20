@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block title %}Knowledge Base - Supervisor{%
+endblock %} {% block content %}
+<div class="card">
+  <div class="card-header">
+    Knowledge Base ({{ knowledge_entries|length }} entries)
+  </div>
+  <div class="card-body">
+    {% if knowledge_entries %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Answer</th>
+          <th>Context</th>
+          <th>Source</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in knowledge_entries %}
+        <tr>
+          <td style="max-width: 200px">{{ entry.question }}</td>
+          <td style="max-width: 200px">{{ entry.answer }}</td>
+          <td style="max-width: 150px">{{ entry.context or 'N/A' }}</td>
+          <td>
+            {% if entry.source_request_id %}
+            <a
+              href="/supervisor/requests"
+              style="color: #667eea; text-decoration: none"
+            >
+              Request #{{ entry.source_request_id }}
+            </a>
+            {% else %}
+            <span style="color: #666">Default</span>
+            {% endif %}
+          </td>
+          <td>{{ entry.created_at.strftime('%m/%d %H:%M') }}</td>
+          <td>
+            <form
+              method="post"
+              action="/supervisor/knowledge/{{ entry.id }}/deactivate"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                class="btn btn-danger"
+                onclick="return confirm('Deactivate this knowledge entry?')"
+                style="font-size: 0.8rem"
+              >
+                Deactivate
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No knowledge entries found.</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">ℹ️ About Knowledge Base</div>
+  <div class="card-body">
+    <p>
+      The knowledge base contains answers that the AI agent can use to respond
+      to customer questions.
+    </p>
+    <ul style="margin: 1rem 0; padding-left: 1.5rem">
+      <li>
+        <strong>Default entries</strong> are pre-loaded with basic salon
+        information
+      </li>
+      <li>
+        <strong>Learned entries</strong> come from supervisor responses to help
+        requests
+      </li>
+      <li>
+        When you respond to a help request, the AI automatically learns from
+        your answer
+      </li>
+      <li>Deactivating an entry removes it from the AI's knowledge base</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

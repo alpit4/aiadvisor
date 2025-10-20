@@ -1,0 +1,99 @@
+{% extends "base.html" %} {% block title %}Requests - Supervisor{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header">📋 All Help Requests</div>
+  <div class="card-body">
+    {% if requests %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Question</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Resolved</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for request in requests %}
+        <tr>
+          <td>#{{ request.id }}</td>
+          <td>
+            {{ request.customer_name or 'Unknown' }}<br />
+            <small style="color: #666">{{ request.customer_phone }}</small>
+          </td>
+          <td>
+            {{ request.question[:100] }}{% if request.question|length > 100
+            %}...{% endif %}
+          </td>
+          <td>
+            <span class="status status-{{ request.status.value }}">
+              {{ request.status.value.upper() }}
+            </span>
+          </td>
+          <td>{{ request.created_at.strftime('%m/%d %H:%M') }}</td>
+          <td>
+            {{ request.resolved_at.strftime('%m/%d %H:%M') if
+            request.resolved_at else 'N/A' }}
+          </td>
+          <td>
+            {% if request.status.value == 'pending' %}
+            <form
+              method="post"
+              action="/supervisor/respond/{{ request.id }}"
+              style="display: inline"
+            >
+              <textarea
+                name="response"
+                placeholder="Response..."
+                required
+                style="
+                  width: 200px;
+                  height: 60px;
+                  padding: 0.25rem;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  font-size: 0.8rem;
+                "
+              ></textarea
+              ><br />
+              <button
+                type="submit"
+                class="btn btn-success"
+                style="margin-top: 0.25rem"
+              >
+                Respond
+              </button>
+            </form>
+            <form
+              method="post"
+              action="/supervisor/timeout/{{ request.id }}"
+              style="display: inline; margin-left: 0.5rem"
+            >
+              <button
+                type="submit"
+                class="btn btn-warning"
+                onclick="return confirm('Mark as unresolved?')"
+              >
+                Timeout
+              </button>
+            </form>
+            {% else %}
+            <span style="color: #666; font-size: 0.9rem">
+              {% if request.status.value == 'resolved' %} ✅ Resolved {% else %}
+              ❌ Unresolved {% endif %}
+            </span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No help requests found.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

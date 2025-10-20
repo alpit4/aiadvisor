@@ -1,0 +1,163 @@
+{% extends "base.html" %} {% block title %}Dashboard - Supervisor{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number">{{ pending_requests|length }}</div>
+    <div class="stat-label">Pending Requests</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ resolved_requests|length }}</div>
+    <div class="stat-label">Resolved Today</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ knowledge_entries|length }}</div>
+    <div class="stat-label">Knowledge Entries</div>
+  </div>
+</div>
+
+{% if pending_requests %}
+<div class="card">
+  <div class="card-header">
+    🚨 Pending Help Requests ({{ pending_requests|length }})
+  </div>
+  <div class="card-body">
+    {% for request in pending_requests %}
+    <div
+      style="
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          margin-bottom: 0.5rem;
+        "
+      >
+        <div>
+          <strong>Request #{{ request.id }}</strong>
+          <span class="status status-pending">PENDING</span>
+        </div>
+        <div style="color: #666; font-size: 0.9rem">
+          {{ request.created_at.strftime('%H:%M') }}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 0.5rem">
+        <strong>Customer:</strong> {{ request.customer_name or 'Unknown' }} ({{
+        request.customer_phone }})
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <strong>Question:</strong> {{ request.question }}
+      </div>
+
+      <form
+        method="post"
+        action="/supervisor/respond/{{ request.id }}"
+        style="display: flex; gap: 0.5rem; align-items: end"
+      >
+        <div style="flex: 1">
+          <textarea
+            name="response"
+            placeholder="Enter your response..."
+            required
+            style="
+              width: 100%;
+              min-height: 60px;
+              padding: 0.5rem;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+            "
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Respond</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="alert alert-info">✅ No pending requests! All caught up.</div>
+{% endif %} {% if resolved_requests %}
+<div class="card">
+  <div class="card-header">
+    ✅ Recently Resolved ({{ resolved_requests|length }})
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Request #</th>
+          <th>Customer</th>
+          <th>Question</th>
+          <th>Response</th>
+          <th>Resolved</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for request in resolved_requests %}
+        <tr>
+          <td>#{{ request.id }}</td>
+          <td>{{ request.customer_name or 'Unknown' }}</td>
+          <td>
+            {{ request.question[:50] }}{% if request.question|length > 50
+            %}...{% endif %}
+          </td>
+          <td>
+            {{ request.supervisor_response[:50] }}{% if
+            request.supervisor_response and request.supervisor_response|length >
+            50 %}...{% endif %}
+          </td>
+          <td>
+            {{ request.resolved_at.strftime('%H:%M') if request.resolved_at else
+            'N/A' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %} {% if knowledge_entries %}
+<div class="card">
+  <div class="card-header">
+    Recent Knowledge Entries ({{ knowledge_entries|length }})
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Answer</th>
+          <th>Source</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in knowledge_entries %}
+        <tr>
+          <td>
+            {{ entry.question[:50] }}{% if entry.question|length > 50 %}...{%
+            endif %}
+          </td>
+          <td>
+            {{ entry.answer[:50] }}{% if entry.answer|length > 50 %}...{% endif
+            %}
+          </td>
+          <td>
+            {% if entry.source_request_id %} Request #{{ entry.source_request_id
+            }} {% else %} Default {% endif %}
+          </td>
+          <td>{{ entry.created_at.strftime('%m/%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %} {% endblock %}
