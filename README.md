@@ -1,4 +1,4 @@
-# Frontdesk AI Supervisor System
+# AI Supervisor System
 
 A human-in-the-loop AI system for managing customer relationships with intelligent escalation.
 
@@ -217,21 +217,6 @@ python test_system.py
 - Customer sentiment analysis
 - Integration with CRM systems
 
-### Scalability Improvements
-
-- Redis for caching
-- Message queues for async processing
-- Microservices architecture
-- Load balancing
-- Database sharding
-
-## 📝 API Endpoints
-
-### Main Server
-
-- `GET /` - System status
-- `GET /health` - Health check
-
 ### Supervisor UI
 
 - `GET /supervisor/` - Dashboard
@@ -240,7 +225,3 @@ python test_system.py
 - `POST /supervisor/respond/{id}` - Respond to request
 - `POST /supervisor/timeout/{id}` - Mark as unresolved
 - `GET /supervisor/api/stats` - System statistics
-
-## 📄 License
-
-This project is part of the Frontdesk Engineering Test.
