@@ -1,11 +1,10 @@
 """
 Database models and initialization
 """
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Boolean, Enum
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-import enum
 
 from .config import settings
 
@@ -15,11 +14,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-class RequestStatus(enum.Enum):
-    """Status of help requests"""
-    PENDING = "pending"
-    RESOLVED = "resolved"
-    UNRESOLVED = "unresolved"
+# Request status constants
+REQUEST_STATUS_PENDING = "PENDING"
+REQUEST_STATUS_RESOLVED = "RESOLVED"
+REQUEST_STATUS_UNRESOLVED = "UNRESOLVED"
 
 
 class HelpRequest(Base):
@@ -31,7 +29,7 @@ class HelpRequest(Base):
     customer_name = Column(String, nullable=True)
     question = Column(Text, nullable=False)
     context = Column(Text, nullable=True)
-    status = Column(Enum(RequestStatus), default=RequestStatus.PENDING)
+    status = Column(String(20), default="PENDING")
     supervisor_response = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     resolved_at = Column(DateTime, nullable=True)
@@ -70,3 +68,8 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def get_db_session():
+    """Get database session context manager"""
+    return SessionLocal()

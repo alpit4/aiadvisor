@@ -6,10 +6,14 @@ load_dotenv()
 
 class Settings:
     """Application settings"""
-    # LiveKit Configuration (Phase 2: optional; empty by default)
+    
+    # LiveKit Configuration (Phase 2: required for voice calls)
     LIVEKIT_URL: str = os.getenv("LIVEKIT_URL", "")
     LIVEKIT_API_KEY: str = os.getenv("LIVEKIT_API_KEY", "")
     LIVEKIT_API_SECRET: str = os.getenv("LIVEKIT_API_SECRET", "")
+    
+    # OpenAI Configuration (required for voice AI)
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./ai_supervisor.db")

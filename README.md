@@ -8,12 +8,13 @@ This system implements a complete human-in-the-loop AI supervisor for customer s
 
 ## ✨ Features
 
-- **AI Agent**: Handles incoming calls with salon business knowledge
+- **Voice AI Agent**: Handles customer calls with salon business knowledge
 - **Smart Escalation**: Automatically escalates unknown questions to supervisors
+- **Real-time Notifications**: Supervisors get instant alerts for escalations
 - **Knowledge Base**: Learns and stores answers from supervisor interactions
 - **Supervisor Dashboard**: Web UI for managing help requests
-- **Customer Follow-up**: Automatically notifies customers when supervisor responds
-- **Timeout Management**: Handles request timeouts gracefully
+- **Interactive Demo**: Type questions and see AI responses in real-time
+- **Human-in-the-Loop**: Complete workflow from AI to human to learning
 - **Request Lifecycle**: Pending → Resolved/Unresolved with proper tracking
 
 ## 🚀 Quick Start
@@ -30,13 +31,13 @@ pip install -r requirements.txt
 python simple_test.py
 ```
 
-### 3. Add Test Data (Optional)
+### 3. Start the Voice AI Demo
 
 ```bash
-python add_test_data.py
+python interactive_voice_demo.py
 ```
 
-### 4. Start the Server
+### 4. Start the Supervisor Dashboard
 
 ```bash
 python simple_main.py
@@ -75,7 +76,13 @@ python simple_main.py
    - View pending, resolved, and unresolved requests
    - Manage knowledge base entries
 
-5. **Testing & Setup** (`simple_test.py`, `add_test_data.py`)
+5. **Voice AI System** (`interactive_voice_demo.py`, `voice_demo.py`)
+
+   - Interactive voice demo for testing
+   - Full LiveKit voice integration (Phase 2)
+   - Real-time AI responses and escalation
+
+6. **Testing & Setup** (`simple_test.py`, `add_test_data.py`)
    - System verification and testing
    - Database population with sample data
 
@@ -110,22 +117,70 @@ python simple_main.py
 - **Background processing**: Timeout manager runs independently
 - **Stateless design**: Can scale horizontally
 
+## 🎯 Demo Instructions
+
+### Voice AI Demo
+
+1. **Start the interactive demo**:
+
+   ```bash
+   python interactive_voice_demo.py
+   ```
+
+2. **Type questions** as if you're calling the salon:
+
+   - "What are your hours?"
+   - "Do you offer hair coloring?"
+   - "How much does a massage cost?"
+
+3. **Watch the AI respond** and escalate unknown questions
+
+4. **See real-time notifications** when escalation happens
+
+### Supervisor Dashboard
+
+1. **Start the dashboard**:
+
+   ```bash
+   python simple_main.py
+   ```
+
+2. **Visit**: http://localhost:8000/supervisor
+
+3. **See escalated requests** from the voice demo
+
+4. **Respond to requests** and watch the AI learn
+
+### Full LiveKit Integration (Phase 2)
+
+For complete voice calls with LiveKit:
+
+1. **Set up your .env file** with LiveKit credentials
+2. **Run the full voice demo**:
+   ```bash
+   python voice_demo.py
+   ```
+3. **Make actual voice calls** using LiveKit
+
 ## 🔧 Configuration
 
 ### Environment Variables
 
 ```bash
-# LiveKit Configuration
-LIVEKIT_URL=wss://your-livekit-server.com
-LIVEKIT_API_KEY=your-api-key
-LIVEKIT_API_SECRET=your-api-secret
-
 # Database
 DATABASE_URL=sqlite:///./ai_supervisor.db
 
 # Server Configuration
-HOST=localhost
+HOST=0.0.0.0
 PORT=8000
+
+# LiveKit Configuration (Phase 2 - Optional)
+LIVEKIT_URL=wss://your-project.livekit.cloud
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
+
+# OpenAI Configuration (Required for voice AI)
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 ### Business Configuration

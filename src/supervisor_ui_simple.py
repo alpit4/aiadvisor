@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta
 
-from .database import get_db, HelpRequest, KnowledgeEntry, RequestStatus
+from .database import get_db, HelpRequest, KnowledgeEntry, REQUEST_STATUS_PENDING, REQUEST_STATUS_RESOLVED, REQUEST_STATUS_UNRESOLVED
 from .config import settings
 
 # Create FastAPI app for supervisor UI
@@ -24,12 +24,12 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     try:
         # Get pending requests
         pending_requests = db.query(HelpRequest).filter(
-            HelpRequest.status == RequestStatus.PENDING
+            HelpRequest.status == REQUEST_STATUS_PENDING
         ).order_by(HelpRequest.created_at.desc()).all()
         
         # Get recent resolved requests
         resolved_requests = db.query(HelpRequest).filter(
-            HelpRequest.status == RequestStatus.RESOLVED
+            HelpRequest.status == REQUEST_STATUS_RESOLVED
         ).order_by(HelpRequest.resolved_at.desc()).limit(10).all()
         
         # Get knowledge entries
@@ -83,11 +83,11 @@ async def respond_to_request(
         if not help_request:
             raise HTTPException(status_code=404, detail="Request not found")
         
-        if help_request.status != RequestStatus.PENDING:
+        if help_request.status != REQUEST_STATUS_PENDING:
             raise HTTPException(status_code=400, detail="Request already processed")
         
         # Update request status
-        help_request.status = RequestStatus.RESOLVED
+        help_request.status = REQUEST_STATUS_RESOLVED
         help_request.supervisor_response = response
         help_request.resolved_at = datetime.utcnow()
         db.commit()
@@ -131,7 +131,7 @@ async def timeout_request(
             raise HTTPException(status_code=404, detail="Request not found")
         
         # Update request status
-        help_request.status = RequestStatus.UNRESOLVED
+        help_request.status = REQUEST_STATUS_UNRESOLVED
         help_request.resolved_at = datetime.utcnow()
         db.commit()
         
@@ -198,15 +198,15 @@ async def get_stats(db: Session = Depends(get_db)):
     try:
         # Count requests by status
         pending_count = db.query(HelpRequest).filter(
-            HelpRequest.status == RequestStatus.PENDING
+            HelpRequest.status == REQUEST_STATUS_PENDING
         ).count()
         
         resolved_count = db.query(HelpRequest).filter(
-            HelpRequest.status == RequestStatus.RESOLVED
+            HelpRequest.status == REQUEST_STATUS_RESOLVED
         ).count()
         
         unresolved_count = db.query(HelpRequest).filter(
-            HelpRequest.status == RequestStatus.UNRESOLVED
+            HelpRequest.status == REQUEST_STATUS_UNRESOLVED
         ).count()
         
         # Count knowledge entries

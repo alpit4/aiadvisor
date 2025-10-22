@@ -3,3 +3,6 @@ uvicorn
 sqlalchemy
 python-dotenv
 jinja2
+livekit
+livekit-agents
+openai

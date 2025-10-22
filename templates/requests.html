@@ -29,8 +29,8 @@
             %}...{% endif %}
           </td>
           <td>
-            <span class="status status-{{ request.status.value }}">
-              {{ request.status.value.upper() }}
+            <span class="status status-{{ request.status.lower() }}">
+              {{ request.status.upper() }}
             </span>
           </td>
           <td>{{ request.created_at.strftime('%m/%d %H:%M') }}</td>
@@ -39,7 +39,7 @@
             request.resolved_at else 'N/A' }}
           </td>
           <td>
-            {% if request.status.value == 'pending' %}
+            {% if request.status == 'PENDING' %}
             <form
               method="post"
               action="/supervisor/respond/{{ request.id }}"
@@ -82,8 +82,8 @@
             </form>
             {% else %}
             <span style="color: #666; font-size: 0.9rem">
-              {% if request.status.value == 'resolved' %} ✅ Resolved {% else %}
-              ❌ Unresolved {% endif %}
+              {% if request.status == 'RESOLVED' %} ✅ Resolved {% else %} ❌
+              Unresolved {% endif %}
             </span>
             {% endif %}
           </td>
