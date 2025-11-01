@@ -2,6 +2,13 @@
 
 A human-in-the-loop AI system for managing customer relationships with intelligent escalation.
 
+## Demo
+
+
+https://github.com/user-attachments/assets/c8e19163-1905-49eb-9085-7699025f4e56
+
+
+
 ## 🎯 Overview
 
 This system implements a complete human-in-the-loop AI supervisor for customer service. When the AI doesn't know an answer, it escalates to a human supervisor, learns from the response, and follows up with the customer.
